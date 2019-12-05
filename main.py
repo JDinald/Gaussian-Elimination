@@ -1,11 +1,13 @@
 import numpy as np
 import sys
+import time
 
 matrixAB = np.loadtxt('matrix.txt')
 B = np.copy(matrixAB[:, matrixAB.shape[1] - 1])
 
 
 def foo(matrix):
+    start=time.process_time() 
     AB = np.copy(matrix)
     numOfRows = AB.shape[0]
     numOfColumns = AB.shape[1] - 1
@@ -45,20 +47,24 @@ def foo(matrix):
         x = lineOfX / AB[columnNum, columnNum]
         xLst.append(x)
 
+    stop = time.process_time() 
     xLst.reverse()
     print("x vector: ")
     print(xLst)
     print(" ")
+    print("Start time: ", start, "End time: ", stop)
+    print("Elapsed time during the whole function in seconds:", stop-start)
     return np.asarray(xLst)
 
-
-"""Cond(A)"""
 vectorOfXAlpha = foo(matrixAB)
 
+"""Cond(A)"""
 modifiedB = np.copy(B)
 modifiedB[np.argmax(abs(B))] = B[np.argmax(abs(B))] / 100 * 101
 
 matrixAB[:, matrixAB.shape[1] - 1] = modifiedB
+print()
+print("Cond(A) check: ")
 vectorOfXBeta = foo(matrixAB)
 
 deltaB = modifiedB - B
