@@ -11,7 +11,6 @@ def foo(matrix):
     AB = np.copy(matrix)
     numOfRows = AB.shape[0]
     numOfColumns = AB.shape[1] - 1
-    columnNum = 0
     xLst = []
 
     """"Lead element search"""
