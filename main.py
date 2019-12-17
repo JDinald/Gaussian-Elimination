@@ -7,7 +7,7 @@ B = np.copy(matrixAB[:, matrixAB.shape[1] - 1])
 
 
 def foo(matrix):
-    start=time.process_time() 
+    start = time.process_time()
     AB = np.copy(matrix)
     numOfRows = AB.shape[0]
     numOfColumns = AB.shape[1] - 1
@@ -18,26 +18,27 @@ def foo(matrix):
     print("Matrix before leading coefficient search: ")
     print(AB)
     print(" ")
-    AB[[0, np.argmax(abs(AB[:, 0]))]] = AB[[np.argmax(abs(AB[:, 0])), 0]]
-    if AB[0, 0] == 0.0:
-        sys.exit("Matrix is not correct")
-
-    print("Matrix after leading coefficient search: ")
-    print(AB)
-    print(" ")
 
     """Upper triangular matrix"""
-    while columnNum < numOfColumns:
-        columnNum += 1
-        for i in range(columnNum, numOfRows):
-            AB[i, :] = AB[i, :] - AB[i, columnNum - 1] / AB[columnNum - 1, columnNum - 1] * AB[columnNum - 1, :]
+
+    for columnNum in range(numOfRows):
+        for i in range(columnNum, numOfColumns):
+            if abs(AB[i][columnNum]) > abs(AB[columnNum][columnNum]):
+                AB[[columnNum, i]] = AB[[i, columnNum]]
+                if AB[columnNum, columnNum] == 0.0:
+                    sys.exit("Matrix is not correct")
+            else:
+                pass
+        if columnNum != 0:
+            for i in range(columnNum, numOfRows):
+                AB[i, :] = AB[i, :] - AB[i, columnNum - 1] / AB[columnNum - 1, columnNum - 1] * AB[columnNum - 1, :]
 
     print("Upper triangular matrix: ")
-    print(AB)
+    print(AB.round(3))
     print(" ")
 
     """Find x vector"""
-
+    columnNum = numOfRows
     while columnNum != 0:
         columnNum -= 1
         lineOfX = AB[columnNum, numOfRows]
@@ -47,14 +48,16 @@ def foo(matrix):
         x = lineOfX / AB[columnNum, columnNum]
         xLst.append(x)
 
-    stop = time.process_time() 
+    stop = time.process_time()
     xLst.reverse()
     print("x vector: ")
     print(xLst)
     print(" ")
     print("Start time: ", start, "End time: ", stop)
-    print("Elapsed time during the whole function in seconds:", stop-start)
+    print("Elapsed time during the whole function in seconds:", stop - start)
+
     return np.asarray(xLst)
+
 
 vectorOfXAlpha = foo(matrixAB)
 
